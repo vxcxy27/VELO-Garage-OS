@@ -1,0 +1,32 @@
+{
+  "name": "velo-shop",
+  "version": "1.0.0",
+  "description": "Multi-tenant bike shop management SaaS with licensing, WhatsApp updates and workload balancing",
+  "main": "server/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "seed": "node server/db/seed.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.8",
+    "axios": "^1.18.1",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.6.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

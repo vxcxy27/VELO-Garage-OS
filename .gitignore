@@ -1,0 +1,6 @@
+node_modules/
+.env
+server/db/mechshop.db
+server/db/mechshop.db-*
+server/whatsapp-session/
+npm-debug.log*
