@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin - Velo Shop</title>
+<link rel="stylesheet" href="/css/base.css" />
+<style>
+  .app-shell {
+    display: flex;
+    min-height: 100vh;
+    background: #050806;
+  }
+  .sidebar {
+    width: 240px;
+    background: rgba(14, 22, 17, 0.98);
+    border-right: 1px solid rgba(72, 255, 151, 0.12);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .sidebar .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--green-500);
+    font-weight: 700;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 32px;
+  }
+  .sidebar .brand .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--green-500);
+    box-shadow: 0 0 20px rgba(49,233,129,0.4);
+  }
+  .sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .sidebar nav button {
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: #8a9a91;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .sidebar nav button:hover {
+    background: rgba(49, 233, 129, 0.06);
+    color: #fff;
+  }
+  .sidebar nav button.active {
+    background: rgba(49, 233, 129, 0.12);
+    color: var(--green-500);
+  }
+  .sidebar .foot {
+    color: #5a6a61;
+    font-size: 12px;
+    padding: 12px 4px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: 12px;
+  }
+  .main {
+    flex: 1;
+    padding: 24px 32px 48px;
+    overflow: auto;
+  }
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+  .main-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .main-header p {
+    color: #8a9a91;
+    font-size: 14px;
+  }
+  #headerActions {
+    display: flex;
+    gap: 10px;
+  }
+  .view { display: none; }
+  .view.active { display: block; }
+  #summaryGrid { margin-bottom: 20px; }
+  table { width: 100%; }
+  @media (max-width: 768px) {
+    .sidebar { width: 200px; padding: 16px 12px; }
+    .main { padding: 16px; }
+    .main-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="dot"></span>Velo Shop Admin</div>
+    <nav id="nav">
+      <button data-view="overview" class="active">📊 Overview</button>
+      <button data-view="shops">🏪 Shops</button>
+      <button data-view="licenses">🗝️ License Expiry</button>
+    </nav>
+    <div class="foot">Development Company Portal<br/>Full access to client licensing.</div>
+    <button class="btn-ghost" id="logoutBtn" style="margin-top:12px;width:100%;">Log out</button>
+  </aside>
+
+  <main class="main">
+    <div class="main-header">
+      <div>
+        <h1 id="viewTitle">Overview</h1>
+        <p id="viewSub">Your client base at a glance.</p>
+      </div>
+      <div id="headerActions"></div>
+    </div>
+
+    <section id="view-overview" class="view active">
+      <div class="grid grid-4" id="summaryGrid"></div>
+    </section>
+
+    <section id="view-shops" class="view">
+      <div class="card" style="padding:6px 4px;overflow-x:auto;">
+        <table>
+          <thead><tr>
+            <th>Shop</th><th>Owner</th><th>Contact</th><th>License</th><th>Expires</th><th>Credits</th><th></th>
+          </tr></thead>
+          <tbody id="shopsTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="view-licenses" class="view">
+      <div id="licenseGroups"></div>
+    </section>
+  </main>
+</div>
+
+<!-- Add Shop Modal -->
+<div class="modal-overlay" id="shopModalOverlay">
+  <div class="modal" style="max-width:700px;">
+    <div class="modal-head">
+      <h3>Add New Shop</h3>
+      <button class="modal-close" data-close-modal="shopModalOverlay">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="shopForm">
+        <div class="grid grid-2">
+          <div class="field"><label>Shop Name</label><input id="shop_name" required /></div>
+          <div class="field"><label>Owner Name</label><input id="owner_name" required /></div>
+        </div>
+        <div class="grid grid-2">
+          <div class="field"><label>Email</label><input id="email" type="email" required /></div>
+          <div class="field"><label>Phone</label><input id="phone" required /></div>
+        </div>
+        <div class="field"><label>Location</label><input id="location" /></div>
+        <div class="field"><label>Temporary Password</label><input id="password" type="text" required placeholder="Share with shop owner" /></div>
+
+        <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:16px;margin:12px 0;border:1px solid rgba(255,255,255,0.05);">
+          <h4 style="color:var(--green-500);margin-bottom:12px;font-size:14px;text-transform:uppercase;letter-spacing:0.05em;">🔐 Shop's Supabase Credentials</h4>
+          <div class="grid grid-2">
+            <div class="field"><label>Supabase URL</label><input id="supabase_url" placeholder="https://xyz.supabase.co" required /></div>
+            <div class="field"><label>Anon Key</label><input id="supabase_anon_key" placeholder="eyJ..." required /></div>
+            <div class="field" style="grid-column:1/-1"><label>Service Role Key</label><input id="supabase_service_key" placeholder="eyJ..." required /></div>
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="field">
+            <label>License Duration</label>
+            <select id="months" required>
+              <option value="1">1 Month</option>
+              <option value="3">3 Months</option>
+              <option value="6" selected>6 Months</option>
+              <option value="12">12 Months</option>
+            </select>
+          </div>
+          <div class="field"><label>Supabase Credits</label><input id="supabase_credits" type="number" min="0" value="0" /></div>
+        </div>
+        <button class="btn-primary" type="submit" style="width:100%;">Create Shop &amp; Issue License</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Renew Modal -->
+<div class="modal-overlay" id="renewModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="renewModalTitle">Renew License</h3>
+      <button class="modal-close" data-close-modal="renewModalOverlay">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="renewShopId" />
+      <p style="color:var(--steel-400);font-size:13.5px;margin-bottom:16px;">Choose a new duration. This generates a fresh license key.</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <button type="button" class="btn-ghost" onclick="renewLicense(1)">1 mo</button>
+        <button type="button" class="btn-ghost" onclick="renewLicense(3)">3 mo</button>
+        <button type="button" class="btn-ghost" onclick="renewLicense(6)">6 mo</button>
+        <button type="button" class="btn-ghost" onclick="renewLicense(12)">12 mo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="lockScreenRoot"></div>
+<script src="/js/common.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>
