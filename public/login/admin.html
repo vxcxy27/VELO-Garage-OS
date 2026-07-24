@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login - Velo Shop</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <style>
+    .auth-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #050806;
+      padding: 20px;
+    }
+    .auth-card {
+      background: rgba(14, 22, 17, 0.95);
+      border: 1px solid rgba(72, 255, 151, 0.2);
+      border-radius: 24px;
+      padding: 40px 32px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    }
+    .auth-card .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      color: var(--green-500);
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 28px;
+    }
+    .auth-card .brand .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--green-500);
+      box-shadow: 0 0 20px rgba(49,233,129,0.4);
+    }
+    .auth-card h2 {
+      color: #fff;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    .auth-card p.sub {
+      color: #8a9a91;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .field { margin-bottom: 18px; }
+    .field label {
+      color: #c0cdc5;
+      font-weight: 600;
+      font-size: 13px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #2a3a32;
+      background: #0b1510;
+      color: #fff;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--green-500);
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--green-500), #1fb862);
+      color: #07120b;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(49,233,129,0.25);
+    }
+    .auth-footer { margin-top: 20px; color: #7a8a81; font-size: 13px; text-align: center; }
+    .auth-footer a { color: var(--green-500); text-decoration: none; }
+    .auth-footer a:hover { text-decoration: underline; }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { border-left: 4px solid #f44336; }
+    .toast.success { border-left: 4px solid #4CAF50; }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="brand"><span class="dot"></span>Velo Shop Admin</div>
+    <h2>Admin Login</h2>
+    <p class="sub">Sign in to manage your client shops and licenses.</p>
+    <form id="loginForm">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="admin@yourcompany.com" required />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn-primary">Sign In</button>
+    </form>
+    <div class="auth-footer">
+      <a href="/login/index.html">← Back to portal selection</a>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const form = document.getElementById('loginForm');
+  const toast = document.getElementById('toast');
+
+  function showToast(msg, type = '') {
+    toast.textContent = msg;
+    toast.className = 'toast show ' + type;
+    clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!email || !password) {
+      showToast('Please fill in all fields.', 'error');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+      showToast('Login successful! Redirecting...', 'success');
+      setTimeout(() => window.location.href = '/admin/dashboard.html', 800);
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
+</script>
+</body>
+</html>

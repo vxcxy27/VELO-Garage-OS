@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velo Shop - Portal</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <style>
+    .portal-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #050806;
+      padding: 20px;
+    }
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 700px;
+      width: 100%;
+    }
+    .portal-card {
+      background: rgba(14, 22, 17, 0.95);
+      border: 1px solid rgba(72, 255, 151, 0.15);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: #fff;
+      cursor: pointer;
+    }
+    .portal-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--green-500);
+      box-shadow: 0 16px 48px rgba(49, 233, 129, 0.08);
+    }
+    .portal-card .icon {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+    .portal-card h3 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .portal-card p {
+      color: #8a9a91;
+      font-size: 13px;
+    }
+    .portal-card.shop {
+      border-color: rgba(49, 233, 129, 0.25);
+    }
+    .portal-card.admin {
+      border-color: rgba(255, 193, 7, 0.2);
+    }
+    .portal-card.mechanic {
+      border-color: rgba(33, 150, 243, 0.2);
+    }
+    .brand-top {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .brand-top h1 {
+      color: var(--green-500);
+      font-size: 32px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .brand-top p {
+      color: #6a7a71;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="portal-page">
+  <div style="width:100%;max-width:700px;">
+    <div class="brand-top">
+      <h1>🚲 Velo Shop</h1>
+      <p>Select your portal to continue</p>
+    </div>
+    <div class="portal-grid">
+      <a href="/login/shop.html" class="portal-card shop">
+        <div class="icon">🏪</div>
+        <h3>Shop Owner</h3>
+        <p>Manage your workshop</p>
+      </a>
+      <a href="/login/mechanic.html" class="portal-card mechanic">
+        <div class="icon">🔧</div>
+        <h3>Mechanic</h3>
+        <p>View assigned jobs</p>
+      </a>
+      <a href="/login/admin.html" class="portal-card admin">
+        <div class="icon">⚙️</div>
+        <h3>Admin</h3>
+        <p>Manage clients & licenses</p>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
