@@ -89,14 +89,14 @@ router.post('/jobs', async (req, res) => {
 
     if (error) throw error;
 
-    // Fetch shop WhatsApp credentials
+    // Fetch shop Twilio credentials
     const { data: shop } = await centralAdmin
       .from('shops')
-      .select('msg91_auth_key, msg91_whatsapp_number, msg91_whatsapp_template, msg91_whatsapp_namespace')
+      .select('twilio_account_sid, twilio_auth_token, twilio_sms_number')
       .eq('id', req.user.shop_id)
       .single();
 
-    await messaging.notifyStatusChange(job, shop);
+    await messaging.notifyStatusChange(job, shop, 'sms');
     res.json(job);
   } catch (err) {
     console.error('[mechanic/jobs/POST] Error:', err);
@@ -140,10 +140,10 @@ router.patch('/jobs/:id', async (req, res) => {
     if (req.body.status && req.body.status !== job.status) {
       const { data: shop } = await centralAdmin
         .from('shops')
-        .select('msg91_auth_key, msg91_whatsapp_number, msg91_whatsapp_template, msg91_whatsapp_namespace')
+        .select('twilio_account_sid, twilio_auth_token, twilio_sms_number')
         .eq('id', req.user.shop_id)
         .single();
-      await messaging.notifyStatusChange(updated, shop);
+      await messaging.notifyStatusChange(updated, shop, 'sms');
     }
 
     res.json(updated);

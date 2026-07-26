@@ -99,16 +99,25 @@ router.post('/jobs', async (req, res) => {
 
     if (error) throw error;
 
-    // Fetch shop WhatsApp credentials
-    const { data: shop } = await centralAdmin
+    // ----- FETCH SHOP TWILIO CREDENTIALS -----
+    const { data: shop, error: shopError } = await centralAdmin
       .from('shops')
-      .select('msg91_auth_key, msg91_whatsapp_number, msg91_whatsapp_template, msg91_whatsapp_namespace')
+      .select('twilio_account_sid, twilio_auth_token, twilio_sms_number')
       .eq('id', req.user.shop_id)
       .single();
 
-    // Send WhatsApp notification
-    await messaging.notifyStatusChange(job, shop);
+    console.log('[DEBUG] Shop Twilio fetch result:', {
+      shopError: shopError ? shopError.message : 'none',
+      hasShop: !!shop,
+      hasSid: !!shop?.twilio_account_sid,
+      hasToken: !!shop?.twilio_auth_token,
+      hasNumber: !!shop?.twilio_sms_number,
+    });
 
+    // Send SMS notification to customer
+    await messaging.notifyStatusChange(job, shop, 'sms');
+
+    // If mechanic assigned, notify mechanic
     if (mechanicIdFinal) {
       const { data: mechanic } = await shopClient.from('mechanics').select('*').eq('id', mechanicIdFinal).single();
       if (mechanic) {
@@ -174,15 +183,23 @@ router.patch('/jobs/:id', async (req, res) => {
 
     if (error) throw error;
 
-    // Fetch shop WhatsApp credentials
-    const { data: shop } = await centralAdmin
+    // ----- FETCH SHOP TWILIO CREDENTIALS -----
+    const { data: shop, error: shopError } = await centralAdmin
       .from('shops')
-      .select('msg91_auth_key, msg91_whatsapp_number, msg91_whatsapp_template, msg91_whatsapp_namespace')
+      .select('twilio_account_sid, twilio_auth_token, twilio_sms_number')
       .eq('id', req.user.shop_id)
       .single();
 
+    console.log('[DEBUG] Shop Twilio fetch (PATCH):', {
+      shopError: shopError ? shopError.message : 'none',
+      hasShop: !!shop,
+      hasSid: !!shop?.twilio_account_sid,
+      hasToken: !!shop?.twilio_auth_token,
+      hasNumber: !!shop?.twilio_sms_number,
+    });
+
     if (req.body.status && req.body.status !== existingJob.status) {
-      await messaging.notifyStatusChange(updated, shop);
+      await messaging.notifyStatusChange(updated, shop, 'sms');
     }
 
     if (req.body.mechanic_id !== undefined && req.body.mechanic_id !== existingJob.mechanic_id) {
@@ -414,12 +431,12 @@ router.get('/sales/monthly', async (req, res) => {
   }
 });
 
-// ---- GET shop info (with WhatsApp credentials) ----
+// ---- GET shop info (including Twilio credentials) ----
 router.get('/me', async (req, res) => {
   try {
     const { data: shop, error } = await centralAdmin
       .from('shops')
-      .select('id, shop_name, owner_name, email, phone, location, license_status, license_expires_at, msg91_auth_key, msg91_whatsapp_number, msg91_whatsapp_template, msg91_whatsapp_namespace')
+      .select('id, shop_name, owner_name, email, phone, location, license_status, license_expires_at, twilio_account_sid, twilio_auth_token, twilio_sms_number')
       .eq('id', req.user.shop_id)
       .single();
 
@@ -431,15 +448,12 @@ router.get('/me', async (req, res) => {
   }
 });
 
-// ---- UPDATE shop settings (only WhatsApp) ----
+// ---- UPDATE shop settings (including Twilio credentials) ----
 router.patch('/settings', async (req, res) => {
   try {
     const {
       shop_name, owner_name, phone, location,
-      msg91_auth_key,
-      msg91_whatsapp_number,
-      msg91_whatsapp_template,
-      msg91_whatsapp_namespace,
+      twilio_account_sid, twilio_auth_token, twilio_sms_number,
     } = req.body;
 
     const { data: shop, error } = await centralAdmin
@@ -449,13 +463,12 @@ router.patch('/settings', async (req, res) => {
         owner_name: owner_name || undefined,
         phone: phone || undefined,
         location: location || undefined,
-        msg91_auth_key: msg91_auth_key || undefined,
-        msg91_whatsapp_number: msg91_whatsapp_number || undefined,
-        msg91_whatsapp_template: msg91_whatsapp_template || undefined,
-        msg91_whatsapp_namespace: msg91_whatsapp_namespace || undefined,
+        twilio_account_sid: twilio_account_sid || undefined,
+        twilio_auth_token: twilio_auth_token || undefined,
+        twilio_sms_number: twilio_sms_number || undefined,
       })
       .eq('id', req.user.shop_id)
-      .select('id, shop_name, owner_name, email, phone, location, msg91_auth_key, msg91_whatsapp_number, msg91_whatsapp_template, msg91_whatsapp_namespace')
+      .select('id, shop_name, owner_name, email, phone, location, twilio_account_sid, twilio_auth_token, twilio_sms_number')
       .single();
 
     if (error) throw error;
