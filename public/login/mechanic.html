@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mechanic Login - Velo Shop</title>
+  <title>Mechanic Login - Velo -garage os</title>
   <link rel="stylesheet" href="/css/base.css" />
   <style>
     .auth-page {
@@ -141,7 +141,9 @@
       </div>
       <button type="submit" class="btn-primary">Sign In</button>
     </form>
-   
+    <div class="auth-footer">
+      <a href="/login/index.html">← Back to portal selection</a>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -176,7 +178,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       showToast('Login successful! Redirecting...', 'success');
-      setTimeout(() => window.location.href = '/m/dashboard.html', 800);
+      setTimeout(() => window.location.href = '/mechanic/dashboard.html', 800);
     } catch (err) {
       showToast(err.message, 'error');
     }
