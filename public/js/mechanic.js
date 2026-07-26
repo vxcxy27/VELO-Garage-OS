@@ -18,7 +18,7 @@ async function init() {
   // Logout
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await window.api('/api/auth/logout/mechanic', { method: 'POST' });
-    window.location.href = '/login/index.html';
+    window.location.href = '/login/mechanic.html';
   });
 
   // Tabs
