@@ -1231,43 +1231,30 @@
       </section>
 
 <!-- Settings Section -->
-<section id="view-settings" class="view" style="display:none">
-  <div class="card settings-card">
-    <h2>Shop Settings</h2>
-    <form id="settingsForm">
-      <h3 class="settings-section-title">Basic Information</h3>
-      <div class="grid grid-2">
-        <div class="field"><label>Shop Name</label><input id="settings_shop_name" required /></div>
-        <div class="field"><label>Owner Name</label><input id="settings_owner_name" required /></div>
-        <div class="field"><label>Phone Number</label><input id="settings_phone" type="tel" /></div>
-        <div class="field"><label>Location</label><input id="settings_location" /></div>
-      </div>
+ <section id="view-settings" class="view" style="display:none">
+        <div class="card settings-card">
+          <h2>Shop Settings</h2>
+          <form id="settingsForm">
+            <h3 class="settings-section-title">Basic Information</h3>
+            <div class="grid grid-2">
+              <div class="field"><label>Shop Name</label><input id="settings_shop_name" required /></div>
+              <div class="field"><label>Owner Name</label><input id="settings_owner_name" required /></div>
+              <div class="field"><label>Phone Number</label><input id="settings_phone" type="tel" /></div>
+              <div class="field"><label>Location</label><input id="settings_location" /></div>
+            </div>
 
-      <h3 class="settings-section-title">📱 MSG91 WhatsApp Configuration</h3>
-      <p class="settings-help">Get your credentials from <a href="https://msg91.com" target="_blank" rel="noopener noreferrer">MSG91 Dashboard</a>.</p>
-      <div class="grid grid-2">
-        <div class="field" style="grid-column:1/-1">
-          <label>Auth Key</label>
-          <input id="settings_msg91_auth_key" placeholder="Your MSG91 Auth Key" />
-        </div>
-        <div class="field">
-          <label>WhatsApp Number</label>
-          <input id="settings_msg91_whatsapp_number" placeholder="e.g. 917314848007" />
-        </div>
-        <div class="field">
-          <label>Template Name</label>
-          <input id="settings_msg91_whatsapp_template" placeholder="e.g. job_status_update" />
-        </div>
-        <div class="field" style="grid-column:1/-1">
-          <label>Template Namespace</label>
-          <input id="settings_msg91_whatsapp_namespace" placeholder="e.g. 64d54b7d_338c_47cf_86ae_9a04a314395a" />
-        </div>
-      </div>
+            <h3 class="settings-section-title">📱 SMS Configuration (Twilio)</h3>
+            <p class="settings-help">Get these credentials from your <a href="https://twilio.com/console" target="_blank" rel="noopener noreferrer">Twilio Console</a>.</p>
+            <div class="grid grid-2">
+              <div class="field"><label>Account SID</label><input id="settings_twilio_account_sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" /></div>
+              <div class="field"><label>Auth Token</label><input id="settings_twilio_auth_token" type="password" placeholder="Your auth token" /></div>
+              <div class="field" style="grid-column:1/-1"><label>SMS Sender Number</label><input id="settings_twilio_sms_number" placeholder="+1234567890 (E.164 format)" /></div>
+            </div>
 
-      <button class="btn-primary" type="submit" style="margin-top:24px">Save All Settings</button>
-    </form>
-  </div>
-</section>
+            <button class="btn-primary" type="submit" style="margin-top:24px">Save All Settings</button>
+          </form>
+        </div>
+      </section>
 
     </div>
   </main>
