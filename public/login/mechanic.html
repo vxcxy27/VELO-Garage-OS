@@ -178,7 +178,7 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       showToast('Login successful! Redirecting...', 'success');
-      setTimeout(() => window.location.href = '/mechanic/dashboard.html', 800);
+      setTimeout(() => window.location.href = '/m/dashboard.html', 800);
     } catch (err) {
       showToast(err.message, 'error');
     }
