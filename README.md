@@ -55,14 +55,7 @@ Visit `http://localhost:3000` and pick a portal:
 6. As jobs move across the kanban board (Pending → In Progress → On Hold → Completed → Delivered), the customer automatically gets a WhatsApp message about the new status.
 7. When a license is close to expiring (within 14 days) or has expired, it shows up on the Admin portal's **License Expiry** page as a card, ready to renew in one click.
 
-## 5. WhatsApp setup (no Twilio, uses your own number)
 
-This uses `whatsapp-web.js`, which drives an actual WhatsApp Web session - not a paid API.
-
-1. Set `WHATSAPP_ENABLED=true` in `.env` and restart the server.
-2. As the shop owner, open the **WhatsApp Setup** tab in the dashboard.
-3. A QR code will appear. On the phone whose number you want messages to send from: open WhatsApp → Settings → Linked Devices → Link a Device → scan the code.
-4. Once connected, job status changes will automatically message the customer's phone number (the one entered on the job).
 
 **Notes:**
 - This library needs to run a real Chromium instance, so it must run on a machine with internet access (not a fully offline/sandboxed container).
@@ -115,13 +108,7 @@ mechshop-app/
 
 The `supabase_credits` field on each shop is tracked today as a plain number you set manually in the admin portal (a simple ledger of what you've allocated to that client). If you want the app to actually provision a Supabase project per shop or sync usage automatically, that would call the Supabase Management API from `adminRoutes.js` when a shop is created - happy to build that out if you tell me how you want provisioning to work.
 
-## 10. Security notes before going live
-
-- Change `JWT_SECRET`, `LICENSE_SECRET`, and `ADMIN_PASSWORD` in `.env` to strong random values - never commit `.env`.
-- Put this behind HTTPS (e.g. via a reverse proxy like Nginx or Caddy) before using it with real customer phone numbers.
-- The SQLite database file lives at `server/db/mechshop.db` - back it up regularly.
-
-
+##  10. Format of the message 
 Hi {{customer_name}}, your {{bike_model}} with the number ({{bike_number}}) is now {{status}}. Order #{{order_number}}.
 
 If you have any query kindly contact us 
